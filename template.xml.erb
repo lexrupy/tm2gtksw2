@@ -105,7 +105,7 @@
   <style name="rubyonrails:class-variable" <%= @color_variable %>/>
   <style name="rubyonrails:operators" <%= @color_keyword %>/>
   <style name="rubyonrails:symbol" <%= @color_symbol %>/>
-  <style name="rubyonrails:rails" <%= @color_constant %>/>
+  <style name="rubyonrails:rails" <%= @color_support %>/>
 
   <!-- Diff Settings -->
   <style name="diff:added-line" <%= @color_diffadd %>/>
@@ -129,9 +129,10 @@
   <style name="css:others-3"  <%= @color_class %>/>
 
   <!-- XML Styles -->
-  <style name="xml:attribute-name" <%= @color_function %>/>
-  <style name="xml:element-name" <%= @color_markup %>/>
+  <style name="xml:element-name" <%= @color_markup_tag %>/>
+  <style name="xml:attribute-name" <%= @color_markup_attr %>/>
   <style name="xml:attribute-value" <%= @color_string %>/>
+  <style name="xml:processing-instruction" <%= @color_markup_inst %>/>
   <style name="xml:namespace" <%= @color_symbol %>/>
   <style name="xml:entity" <%= @color_constant %>/>
   <style name="html:script" <%= @color_class %>/>

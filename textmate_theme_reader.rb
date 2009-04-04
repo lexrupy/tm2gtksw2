@@ -56,6 +56,7 @@ class TextmateThemeReader
         @src_theme[new_key] = value
       end
     end
+    @src_theme.each_key {|k| @src_theme.delete(k) if (@src_theme[k].keys.to_a.reject{|e| e == :fontStyle } & [:background, :foreground]).empty? }
     @src_theme = @src_theme.merge(global_settings)
     @src_theme = GlobHash.new(@src_theme)
   end
@@ -71,13 +72,15 @@ class TextmateThemeReader
     theme.line_highlight = normalize_color(@src_theme[:lineHighlight], theme.background)
 
     # CONSTANT
-    theme.constant = @src_theme["variable.other.constant"] || @src_theme["constant"]
+    theme.constant = @src_theme["constant"] || @src_theme["support"] || @src_theme["variable.other.constant"]
+
+    theme.support = @src_theme["support.function"] || @src_theme["support"] || theme.constant
 
     # #foo
-    theme.comment = @src_theme["comment"]
+    theme.comment = @src_theme["comment"] || @src_theme["comment.line"] || @src_theme["comment.block"]
 
     # "foo"
-    theme.string = @src_theme["string"]
+    theme.string = @src_theme["string"] || @src_theme["string - string source"] || @src_theme["string source string"]
 
     # Invisibles
     theme.invisibles = @src_theme["invisibles"]
@@ -89,9 +92,9 @@ class TextmateThemeReader
     theme.highlight = @src_theme["lineHighlight"]
 
     # Diff
-    theme.diffadd = @src_theme["markup.inserted"] || "#144212"
-    theme.diffdel = @src_theme["markup.deleted"] || "#660000"
-    theme.difflct = @src_theme["meta.diff.header"] || "#2F33AB"
+    theme.diffadd = @src_theme["markup.inserted"] || {:background => "#144212" }
+    theme.diffdel = @src_theme["markup.deleted"] || {:background => "#660000" }
+    theme.difflct = @src_theme["meta.diff.header"] || {:background => "#2F33AB" }
 
     # 123
     theme.number = @src_theme["constant.numeric"]
@@ -115,16 +118,17 @@ class TextmateThemeReader
     theme.entityname = @src_theme["entity.name"] || theme.constant
 
     # "string with #{someother} string"
-    theme.interpolation = @src_theme["constant.character.escaped"] || theme.string
+    theme.interpolation = @src_theme["string source"] || @src_theme["string.interpolated"]  || @src_theme["constant.character.escaped"] || @src_theme["constant.character.escaped"] || theme.string
 
     # /jola/
     theme.regexp = @src_theme["string.regexp"]
 
-    # UserSpace, CGI, JOLA_MISIO
-    #theme.constant = @src_theme["support"]
-
     # <div>
-    theme.markup = @src_theme["meta.tag"]
+    puts @src_theme["entity.name.tag"]
+    theme.markup = @src_theme["meta.tag"] || theme.function
+    theme.markup_attr = @src_theme["entity.other.attribute-name"] || @src_theme["declaration.tag"] || theme.function
+    theme.markup_tag = @src_theme["entity.name.tag"] || theme.markup
+    theme.markup_inst = @src_theme["declaration.xml-processing"] || @src_theme["declaration.tag"] || @src_theme["declaration.tag.entity"] || @src_theme["meta.tag.entity"] || theme.markup
 
     theme
   end
@@ -160,3 +164,4 @@ class TextmateThemeReader
   end
 
 end
+

@@ -62,6 +62,9 @@ class GtksourceviewThemeWriter
     @color_keyword          = get_style(@theme.keyword)
     @color_function         = get_style(@theme.function)
     @color_markup           = get_style(@theme.markup)
+    @color_markup_tag       = get_style(@theme.markup_tag)
+    @color_markup_attr      = get_style(@theme.markup_attr)
+    @color_markup_inst      = get_style(@theme.markup_inst)
     @color_class            = get_style(@theme.entityname)
     @color_number           = get_style(@theme.number)
     @color_variable         = get_style(@theme.variable)
@@ -72,6 +75,7 @@ class GtksourceviewThemeWriter
     @color_interpolat       = get_style(@theme.interpolation)
     @color_highlight        = get_style(@theme.highlight)
     @color_modulehandl      = get_style(@theme.constant)
+    @color_support          = get_style(@theme.support)
     @color_diffadd          = get_style(@theme.diffadd)
     @color_diffrm           = get_style(@theme.diffdel)
     @color_difflct          = get_style(@theme.difflct)
@@ -83,3 +87,4 @@ class GtksourceviewThemeWriter
     @lines
   end
 end
+
