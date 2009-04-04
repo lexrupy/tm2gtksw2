@@ -77,7 +77,7 @@ class TextmateThemeReader
     theme.invalid = get_style(['invalid', 'invalid.illegal'])
 
     # CONSTANT
-    theme.constant = get_style(["constant", "support", "variable.other.constant", "constant.character"])
+    theme.constant = get_style(["constant", "support", "constant.character", "variable.other.constant"])
     # __FILE__ # support.type, support.class
     theme.support = get_style(["support.function", "support"]) || theme.constant
     # #foo
