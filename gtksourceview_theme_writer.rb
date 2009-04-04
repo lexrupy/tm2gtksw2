@@ -16,30 +16,24 @@ class GtksourceviewThemeWriter
     val.gsub(/:/, '\:').gsub(/#/, '\#')
   end
 
-  def prepare_color(col, bg=nil)
-    normalize_color(col, bg)
-  end
-
   def add_line(line)
     @lines << line #"#{name}=#{escape_value(value).strip}"
   end
 
-  def get_style(style, bg=nil)
+  def get_style(style, default="")
     if style.to_s =~ /missing prop/ || style.nil?
       return
     end
     s = ""
-    s << "foreground=\"#{prepare_color(style[:foreground],@color_background)}\"" if style[:foreground]
-    s << " background=\"#{prepare_color(style[:background],@color_background)}\"" if style[:background]
-    if s.size > 1 && style[:fontStyle]
-      s << " bold=\"true\"" if style[:fontStyle] =~ /bold/
-      s << " underline=\"true\"" if style[:fontStyle] =~ /underline/
-      s << " italic=\"true\"" if style[:fontStyle] =~ /italic/
-    end
+    s << "foreground=\"#{style[:foreground]}\"" if style[:foreground]
+    s << " background=\"#{style[:background]}\"" if style[:background]
+    s << " bold=\"true\"" if style[:bold]
+    s << " underline=\"true\"" if style[:underline]
+    s << " italic=\"true\"" if style[:italic]
     if s.size > 1
       s
     else
-      ""
+      default
     end
   end
 
@@ -56,7 +50,7 @@ class GtksourceviewThemeWriter
     @color_invisibles       = @theme.invisibles
     @color_brkmatch         = "background=\"#4C4C4C\""
     @color_searchmatch      = "background=\"#404040\""
-    @color_error            = "background=\"#C80000\" foreground=\"#F0EA20\""
+    @color_error            = get_style(@theme.invalid, "background=\"#C80000\" foreground=\"#F0EA20\"")
     @color_note             = "background=\"#F0EA20\" foreground=\"#C80000\""
     @color_comment          = get_style(@theme.comment)
     @color_keyword          = get_style(@theme.keyword)

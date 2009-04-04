@@ -56,7 +56,7 @@ class TextmateThemeReader
         @src_theme[new_key] = value
       end
     end
-    @src_theme.each_key {|k| @src_theme.delete(k) if (@src_theme[k].keys.to_a.reject{|e| e == :fontStyle } & [:background, :foreground]).empty? }
+    #@src_theme.each_key {|k| @src_theme.delete(k) if (@src_theme[k].keys.to_a.reject{|e| e == :fontStyle } & [:background, :foreground]).empty? }
     @src_theme = @src_theme.merge(global_settings)
     @src_theme = GlobHash.new(@src_theme)
   end
@@ -65,72 +65,83 @@ class TextmateThemeReader
     theme = OpenStruct.new
     theme.name = @name
     theme.foreground = normalize_color(@src_theme[:foreground])
-    theme.background = normalize_color(@src_theme[:background])
+    @global_bg = normalize_color(@src_theme[:background])
+    theme.background = @global_bg
+    # Put in an instance variable to be accecible by next normalize color operations
     theme.caret = normalize_color(@src_theme[:caret])
-    theme.selection = normalize_color(@src_theme[:selection], theme.background)
-    theme.eol_marker = normalize_color(@src_theme[:invisibles], theme.background)
-    theme.line_highlight = normalize_color(@src_theme[:lineHighlight], theme.background)
+    theme.selection = normalize_color(@src_theme[:selection], @global_bg)
+    theme.eol_marker = normalize_color(@src_theme[:invisibles], @global_bg)
+    theme.line_highlight = normalize_color(@src_theme[:lineHighlight], @global_bg)
+    theme.invisibles = theme.eol_marker
+
+    theme.invalid = get_style(['invalid', 'invalid.illegal'])
 
     # CONSTANT
-    theme.constant = @src_theme["constant"] || @src_theme["support"] || @src_theme["variable.other.constant"]
-
-    theme.support = @src_theme["support.function"] || @src_theme["support"] || theme.constant
-
+    theme.constant = get_style(["constant", "support", "variable.other.constant", "constant.character"])
+    # __FILE__ # support.type, support.class
+    theme.support = get_style(["support.function", "support"]) || theme.constant
     # #foo
-    theme.comment = @src_theme["comment"] || @src_theme["comment.line"] || @src_theme["comment.block"]
-
+    theme.comment = get_style(["comment", "comment.line", "comment.block"])
     # "foo"
-    theme.string = @src_theme["string"] || @src_theme["string - string source"] || @src_theme["string source string"]
-
-    # Invisibles
-    theme.invisibles = @src_theme["invisibles"]
-
+    theme.string = get_style(["string", "string - string source", "string source string"])
     # :foo
-    theme.label = @src_theme["constant"]
-
-    # Current line
-    theme.highlight = @src_theme["lineHighlight"]
-
+    theme.label = get_style(["constant", "constant.other", "constant.other.symbol","constant.other.symbol.ruby"])
     # Diff
-    theme.diffadd = @src_theme["markup.inserted"] || {:background => "#144212" }
-    theme.diffdel = @src_theme["markup.deleted"] || {:background => "#660000" }
-    theme.difflct = @src_theme["meta.diff.header"] || {:background => "#2F33AB" }
-
+    theme.diffadd = get_style(["markup.inserted"])
+    theme.diffdel = get_style(["markup.deleted"])
+    theme.difflct = get_style(["markup.header"])
     # 123
-    theme.number = @src_theme["constant.numeric"]
-
+    theme.number = get_style(["constant.numeric"])
     # class, def, if, end
-    theme.keyword = @src_theme["keyword.control"]
-
+    theme.keyword = get_style(["keyword.control"])
     # true, false, nil
-    theme.special_constant = @src_theme["constant.language"]
-
+    theme.special_constant = get_style(["constant.language"])
     # @foo
-    theme.variable = @src_theme["variable"] || @src_theme["variable.other"]
-
+    theme.variable = get_style(["variable", "variable.other"])
     # = < + -
-    theme.operator = @src_theme["keyword.operator"]
-
+    theme.operator = get_style(["keyword.operator"])
     # def foo
-    theme.function = @src_theme["entity.name.function"]
-
+    theme.function = get_style(["entity.name.function"])
     # class MyClass
-    theme.entityname = @src_theme["entity.name"] || theme.constant
-
+    theme.entityname = get_style(["entity.name"]) || theme.constant
     # "string with #{someother} string"
-    theme.interpolation = @src_theme["string source"] || @src_theme["string.interpolated"]  || @src_theme["constant.character.escaped"] || @src_theme["constant.character.escaped"] || theme.string
-
+    theme.interpolation = get_style(["string.interpolated",
+                                      "constant.character.escaped",
+                                      "constant.character.escaped",
+                                      "string.quoted source",
+                                      "string constant.other.placeholder",
+                                      "string source"]) || theme.string
     # /jola/
-    theme.regexp = @src_theme["string.regexp"]
-
+    theme.regexp = get_style(["string.regexp"])
     # <div>
-    puts @src_theme["entity.name.tag"]
-    theme.markup = @src_theme["meta.tag"] || theme.function
-    theme.markup_attr = @src_theme["entity.other.attribute-name"] || @src_theme["declaration.tag"] || theme.function
-    theme.markup_tag = @src_theme["entity.name.tag"] || theme.markup
-    theme.markup_inst = @src_theme["declaration.xml-processing"] || @src_theme["declaration.tag"] || @src_theme["declaration.tag.entity"] || @src_theme["meta.tag.entity"] || theme.markup
+    theme.markup = get_style(["meta.tag"]) || theme.function
+    theme.markup_attr = get_style(["entity.other.attribute-name", "declaration.tag", "meta.attribute.smarty"]) || theme.function
+    theme.markup_tag = get_style(["entity.name.tag", "meta.tag entity"]) || theme.markup
+    theme.markup_inst = get_style(["declaration.xml-processing", "declaration.tag", "declaration.tag.entity", "meta.tag.entity"]) || theme.markup
 
     theme
+  end
+
+
+  def get_style(keys)
+    style = {}
+    keys.to_a.each do |key|
+      if @src_theme[key]
+        if @src_theme[key][:fontStyle] =~ /bold/
+          style[:bold] ||= true
+        end
+        if @src_theme[key][:fontStyle] =~ /italic/
+          style[:italic] ||= true
+        end
+        if @src_theme[key][:fontStyle] =~ /underline/
+          style[:underline] ||= true
+        end
+        style[:background] = normalize_color(@src_theme[key][:background], @global_bg) if @src_theme[key][:background]
+        style[:foreground] = normalize_color(@src_theme[key][:foreground], @global_bg) if @src_theme[key][:foreground]
+      end
+    end
+    return nil if style.keys.empty?
+    style
   end
 
   private

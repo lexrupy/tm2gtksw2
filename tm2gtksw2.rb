@@ -5,6 +5,13 @@ require 'ostruct'
 require File.join(File.dirname(__FILE__), 'textmate_theme_reader.rb')
 require File.join(File.dirname(__FILE__), 'gtksourceview_theme_writer.rb')
 
+def teste_symbol(param, param1)
+  helper :symbol
+  %w(one two three)
+  %Q[uma string diferente]
+  "uma string com #{interpolacao}"
+end
+
 def debug(msg)
   puts msg if DEBUG
 end
@@ -20,3 +27,4 @@ jed_theme_filename = tm_theme_filename.gsub("tmTheme", "xml")
 File.open(jed_theme_filename, "w") do |f|
   f.write(dst)
 end
+
