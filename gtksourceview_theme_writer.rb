@@ -142,7 +142,13 @@ class GtksourceviewThemeWriter
       'rubyonrails:regex'                 => ['string.regexp'],
       'rubyonrails:module-handler'        => ['keyword'],
 
-      'rubyonrails:class-definition'      => ['support.class.ruby', 'entity.name.type'],
+      'rubyonrails:module-name'           => ['entity.name.module','support.class.ruby', 'entity.name.type'],
+      'rubyonrails:class-name'            => ['support.class.ruby', 'entity.name.type', 'entity'],
+      'rubyonrails:class-inherit'         => ['entity.other.inherited-class', 'support.class.ruby', 'entity.name.type'],
+      'rubyonrails:block-parameter'       => ['variable.parameter.function'],
+      #'rubyonrails:function-parameters'   => ['variable.parameter.function'],
+
+      #'rubyonrails:class-definition'      => ['support.class.ruby', 'entity.name.type'],
       'rubyonrails:simple-interpolation'  => ['string source', 'string.interpolated', 'source string source', 'constant.character.escaped'],
       'rubyonrails:complex-interpolation' => ['string source', 'string.interpolated', 'source string source', 'constant.character.escaped'],
       'rubyonrails:rails'                 => ['source.ruby.rails', 'variable.other.constant'],
