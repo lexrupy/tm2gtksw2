@@ -83,7 +83,7 @@ class GtksourceviewThemeWriter
       'def:boolean'                       => ['constant.language'],
       'def:identifier'                    => ['variable', 'variable.language', 'variable.other'],
       'def:function'                      => ['entity.name.function'],
-      'def:builtin'                       => ['constant.language'],
+      'def:builtin'                       => ['constant.language', 'support'],
       'def:statement'                     => ['keyword'],
       'def:operator'                      => ['keyword.operator'],
       'def:keyword'                       => ['keyword.control', 'keyword', 'storage'],
@@ -105,12 +105,12 @@ class GtksourceviewThemeWriter
       'xml:entity'                        => ['declaration.xml-processing'],
       'xml:doctype'                       => ['declaration.doctype', 'meta.tag.sgml.doctype'],
       'xml:namespace'                     => ['entity.name.tag.namespace'],
-      'xml:tag'                           => ['markup.tag', 'declaration.tag', 'entity.name.tag'],
+      'xml:tag'                           => ['markup.tag', 'declaration.tag', 'entity.name.tag', 'entity.name.function'],
       'xml:element-name'                  => ['entity.name.tag', 'markup.tag'],
       'xml:attribute-name'                => ['entity.other.attribute-name'],
 
       'html:dtd'                          => ['string.quoted.docinfo.doctype.DTD', 'declaration.doctype.DTD'],
-      'html:tag'                          => ['markup.tag', 'declaration.tag', 'entity.name.tag'],
+      'html:tag'                          => ['markup.tag', 'declaration.tag', 'entity.name.tag', 'entity.name.function'],
 
       'js:function'                       => ['support.function.js'],
 
@@ -131,7 +131,7 @@ class GtksourceviewThemeWriter
       'ruby:module-handler'               => ['keyword'],
 
       'rubyonrails:attribute-definition'  => ['variable.other.constant', 'keyword'],
-      'rubyonrails:builtin'               => ['variable.other.constant'],
+      'rubyonrails:builtin'               => ['support','variable.other.constant'],
       'rubyonrails:instance-variable'     => ['variable', 'variable.language', 'variable.other'],
       'rubyonrails:global-variable'       => ['entity.name.function'],
       'rubyonrails:class-variable'        => ['variable', 'variable.language', 'variable.other'],
